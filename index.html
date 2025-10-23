@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regalo de Cumpleaños</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .fade-out {
+      opacity: 0 !important;
+      transition: opacity 0.8s;
+    }
+    .felicitacion-box {
+      display: none;
+      margin: 32px auto 0 auto;
+      max-width: 400px;
+      background: #fffbe6;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(214,51,108,0.10);
+      padding: 24px 18px;
+      text-align: center;
+      z-index: 10000;
+      position: relative;
+    }
+    .felicitacion-box textarea {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      border: 1px solid #d6336c33;
+      padding: 10px;
+      font-size: 1em;
+      margin-bottom: 12px;
+      resize: none;
+    }
+    .gift-image.expand {
+      transform: scale(1.15);
+      transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+      z-index: 2;
+    }
+    body {
+      background-color: #ffe4f0;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    h1 {
+      color: #d6336c;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+    .gift-image {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      transition: opacity 0.5s ease;
+      margin: 0 auto 16px auto;
+      display: block;
+      object-fit: cover;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 12px;
+      height: 24px;
+      border-radius: 4px;
+      opacity: 0.85;
+      animation: confetti-fall 1.6s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(80vh) scale(0.7) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      .gift-image {
+        max-width: 95vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <h1 id="titulo" class="mt-4 mb-4">¡Haz clic para abrir tu regalo! 🎉</h1>
+    <div id="felicitacion" class="felicitacion-box">
+      <h2 class="mb-3">¡Feliz Cumpleaños! 🎂🎉</h2>
+      <textarea id="felicitacion-texto" readonly>¡Te deseo un año lleno de alegría, amor y muchos éxitos! Disfruta tu día al máximo. 🥳</textarea>
+      <button id="btn-copiar" class="btn btn-outline-primary">Copiar mensaje</button>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+  <div class="gift-container p-3 rounded" style="background: transparent;">
+          <img id="giftClosed1" class="gift-image" src="regalo1.jpg" alt="Regalo cerrado" />
+          <img id="giftClosed2" class="gift-image hidden" src="regalo2.jpg" alt="Regalo abierto" />
+          <img id="giftClosed3" class="gift-image hidden" src="regalo3.jpg" alt="Regalo abierto" />
+          <img id="giftClosed4" class="gift-image hidden" src="regalo4.jpg" alt="Regalo abierto" />
+          <img id="giftClosed5" class="gift-image hidden" src="regalo5.jpg" alt="Regalo abierto" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="confetti" class="confetti-container" style="display:none;"></div>
+  <script>
+    var imagenEstado = 1;
+    $(document).ready(function() {
+      imagenEstado = 1;
+      mostrarImagenActual();
+      $('.gift-image').on('click', function() {
+        var $img = $(this);
+        $img.addClass('expand');
+        setTimeout(function() {
+          $img.removeClass('expand');
+          if (imagenEstado < 5) {
+            openGift();
+          } else {
+            lanzarConfeti();
+          }
+        }, 400);
+      });
+    });
+    function mostrarImagenActual() {
+      $('.gift-image').addClass('hidden');
+      $('#giftClosed' + imagenEstado).removeClass('hidden');
+    }
+    function openGift() {
+      if (imagenEstado < 5) {
+        imagenEstado++;
+        mostrarImagenActual();
+      }
+    }
+    function lanzarConfeti() {
+      var $confetti = $('#confetti');
+      $confetti.empty();
+      $confetti.show();
+      var colors = ['#d6336c', '#fbb13c', '#3ec9a7', '#6c63ff', '#ffe156', '#ff6f91', '#43d8c9', '#ffb400'];
+      var numConfetti = 40;
+      var containerWidth = $confetti.width();
+      for (var i = 0; i < numConfetti; i++) {
+        var left = Math.random() * (containerWidth - 12);
+        var delay = Math.random() * 0.5;
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var piece = $('<div class=\"confetti-piece\"></div>').css({
+          left: left + 'px',
+          top: '0px',
+          background: color,
+          animationDelay: delay + 's',
+        });
+        $confetti.append(piece);
+      }
+      // Desvanecer la última imagen
+      $('#giftClosed5').addClass('fade-out');
+      // Cambiar el título por felicitación
+      $('#titulo').text('¡Feliz cumpleaños! 🎉');
+      // Mostrar felicitación y botón copiar
+      setTimeout(function() {
+        $confetti.fadeOut(600);
+        $('#felicitacion').fadeIn(600);
+      }, 1800);
+    // Botón copiar felicitación
+    $(document).on('click', '#btn-copiar', function() {
+      var texto = $('#felicitacion-texto').val();
+      navigator.clipboard.writeText(texto);
+      $(this).text('¡Copiado!').addClass('btn-success').removeClass('btn-outline-primary');
+      setTimeout(() => {
+        $(this).text('Copiar mensaje').removeClass('btn-success').addClass('btn-outline-primary');
+      }, 1500);
+    });
+    }
+  </script>
+</body>
+</html>
